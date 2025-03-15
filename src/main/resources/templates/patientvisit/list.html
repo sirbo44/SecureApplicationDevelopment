@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{patientvisit.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{patientvisit.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/patientvisits/add}" class="btn btn-primary ms-2">[[#{patientvisit.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${patientvisits.empty}">[[#{patientvisit.list.empty}]]</div>
+            <div th:if="${!patientvisits.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{patientvisit.visitid.label}]]</th>
+                            <th scope="col">[[#{patientvisit.vistidate.label}]]</th>
+                            <th scope="col">[[#{patientvisit.patient.label}]]</th>
+                            <th scope="col">[[#{patientvisit.doctor.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="patientvisit : ${patientvisits}">
+                            <td>[[${patientvisit.visitid}]]</td>
+                            <td>[[${patientvisit.vistidate}]]</td>
+                            <td>[[${patientvisit.patient}]]</td>
+                            <td>[[${patientvisit.doctor}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/patientvisits/edit/{visitid}(visitid=${patientvisit.visitid})}" class="btn btn-sm btn-secondary">[[#{patientvisit.list.edit}]]</a>
+                                    <form th:action="@{/patientvisits/delete/{visitid}(visitid=${patientvisit.visitid})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{patientvisit.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
