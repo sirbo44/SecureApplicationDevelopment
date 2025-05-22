@@ -1,3 +1,3 @@
-INSERT INTO role VALUES (1,'Admin'),(2,'Doctor'),(3,'Patient');
+INSERT INTO role VALUES (1,'ROLE_ADMIN'),(2,'ROLE_DOCTOR'),(3,'ROLE_PATIENT'), (4,'ROLE_SECRETARY');
 
-INSERT INTO hospuser (locked,role_id,lastchangepassword,lastlogondatetime,email,username,userpassword) VALUES (0,1,NULL,'2025-03-14 10:33:17.263707','admin@admin.com','admin','1234'),(0,3,NULL,'2025-03-14 10:33:40.087770','pat@pat.com','patient','1234'),(0,2,NULL,'2025-03-14 10:34:11.024450','doc@doc.com','doctor','1234');
+INSERT INTO hospuser (locked,role_id,lastchangepassword,lastlogondatetime,email,username,userpassword) VALUES (0,1,NULL,'2025-03-14 10:33:17.263707','admin@admin.com','admin','12$2a$10$4ZYhRSW30hNLxPlmHyclPePhO03pfKUh4.Hkdo70neb1xYFyWhde634'),(0,3,NULL,'2025-03-14 10:33:40.087770','pat@pat.com','patient','$2a$10$4ZYhRSW30hNLxPlmHyclPePhO03pfKUh4.Hkdo70neb1xYFyWhde6'), (0,2,NULL,'2025-03-14 10:34:11.024450','doc@doc.com','doctor','$2a$10$4ZYhRSW30hNLxPlmHyclPePhO03pfKUh4.Hkdo70neb1xYFyWhde6'), (0,4,NULL,'2025-03-14 10:34:11.024450','secr@doc.com','secretary','$2a$10$4ZYhRSW30hNLxPlmHyclPePhO03pfKUh4.Hkdo70neb1xYFyWhde6');
