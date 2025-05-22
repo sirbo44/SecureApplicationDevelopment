@@ -5,6 +5,8 @@ Modify the application.properties file to point to your database (spring.datasou
 
 File import.sql has some default values
 
+Users password : 1234
+
 
 
 
