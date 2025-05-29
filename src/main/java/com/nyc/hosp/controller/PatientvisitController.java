@@ -1,13 +1,20 @@
 package com.nyc.hosp.controller;
 
 import com.nyc.hosp.domain.Hospuser;
+import com.nyc.hosp.domain.Role;
+import com.nyc.hosp.model.HospuserDTO;
 import com.nyc.hosp.model.PatientvisitDTO;
 import com.nyc.hosp.repos.HospuserRepository;
 import com.nyc.hosp.service.PatientvisitService;
 import com.nyc.hosp.util.CustomCollectors;
 import com.nyc.hosp.util.WebUtils;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 
 @Controller
@@ -44,6 +53,7 @@ public class PatientvisitController {
 
     @GetMapping
     public String list(final Model model) {
+
         model.addAttribute("patientvisits", patientvisitService.findAll());
         return "patientvisit/list";
     }
@@ -66,8 +76,20 @@ public class PatientvisitController {
 
     @GetMapping("/edit/{visitid}")
     public String edit(@PathVariable(name = "visitid") final Integer visitid, final Model model) {
-        model.addAttribute("patientvisit", patientvisitService.get(visitid));
-        return "patientvisit/edit";
+        PatientvisitDTO patientvisitDTO = patientvisitService.get(visitid);
+        Integer doctorName = patientvisitDTO.getDoctor();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Hospuser currentUser = hospuserRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Integer currentUserId = currentUser.getUserId();
+        if (!doctorName.equals(currentUserId)){
+            return "redirect:/patientvisits";
+        } else{
+            model.addAttribute("patientvisit", patientvisitService.get(visitid));
+            return "patientvisit/edit";
+        }
+
     }
 
     @PostMapping("/edit/{visitid}")

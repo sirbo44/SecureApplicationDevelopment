@@ -1,5 +1,6 @@
 package com.nyc.hosp.model;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,6 +15,8 @@ public class HospuserDTO {
     private String username;
 
     @Size(max = 100)
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$",
+            message = "Password must be at least 8 characters long and contain at least one letter, one number, and one special character.")
     private String userpassword;
 
     @Size(max = 100)

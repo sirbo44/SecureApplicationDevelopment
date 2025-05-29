@@ -10,6 +10,8 @@ import com.nyc.hosp.repos.RoleRepository;
 import com.nyc.hosp.util.NotFoundException;
 import com.nyc.hosp.util.ReferencedWarning;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +102,10 @@ hospuserDTO.setLastchangepassword(hospuser.getLastchangepassword());
             return referencedWarning;
         }
         return null;
+    }
+
+    public Optional<Hospuser> findByUsername(String username){
+        return hospuserRepository.findByUsername(username);
     }
 
 }

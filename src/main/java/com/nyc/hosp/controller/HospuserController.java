@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 
 @Controller
@@ -55,16 +57,21 @@ public class HospuserController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute("hospuser") @Valid final HospuserDTO hospuserDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                      final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "hospuser/add";
         }
-        // Check 2 passwords
-        hospuserDTO.setLastlogondatetime(OffsetDateTime.now());
-        hospuserDTO.setLocked(false);
-        hospuserService.create(hospuserDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("hospuser.create.success"));
-        return "redirect:/hospusers";
+        if (hospuserDTO.getUserpassword().equals(hospuserDTO.getUserpassword2())){
+            hospuserDTO.setLastlogondatetime(OffsetDateTime.now());
+            hospuserDTO.setLocked(false);
+            hospuserDTO.setLastchangepassword((OffsetDateTime) LocalDate.now().atStartOfDay().atOffset(ZoneOffset.UTC));
+            hospuserService.create(hospuserDTO);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("hospuser.create.success"));
+            return "redirect:/hospusers";
+        } else {
+            bindingResult.rejectValue("userpassword2", "error.hospuser", "Password and Confirm Password do not match");
+            return "hospuser/add";
+        }
     }
 
     @GetMapping("/edit/{userId}")

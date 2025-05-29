@@ -37,7 +37,7 @@ public class Hospuser {
     @Column
     private boolean locked;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 

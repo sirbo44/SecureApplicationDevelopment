@@ -5,6 +5,7 @@ import com.nyc.hosp.domain.Patientvisit;
 import com.nyc.hosp.model.PatientvisitDTO;
 import com.nyc.hosp.repos.HospuserRepository;
 import com.nyc.hosp.repos.PatientvisitRepository;
+import com.nyc.hosp.util.EncryptionUtil;
 import com.nyc.hosp.util.NotFoundException;
 import java.util.List;
 import org.springframework.data.domain.Sort;
@@ -57,7 +58,7 @@ public class PatientvisitService {
             final PatientvisitDTO patientvisitDTO) {
         patientvisitDTO.setVisitid(patientvisit.getVisitid());
         patientvisitDTO.setVistidate(patientvisit.getVisitdate());
-        patientvisitDTO.setDiagnosis(patientvisit.getDiagnosis());
+        patientvisitDTO.setDiagnosis(patientvisit.getDiagnosis() == null ? null : EncryptionUtil.decrypt(patientvisit.getDiagnosis()));
         patientvisitDTO.setPatient(patientvisit.getPatient() == null ? null : patientvisit.getPatient().getUserId());
         patientvisitDTO.setDoctor(patientvisit.getDoctor() == null ? null : patientvisit.getDoctor().getUserId());
         return patientvisitDTO;
@@ -66,7 +67,8 @@ public class PatientvisitService {
     private Patientvisit mapToEntity(final PatientvisitDTO patientvisitDTO,
             final Patientvisit patientvisit) {
         patientvisit.setVisitdate(patientvisitDTO.getVistidate());
-        patientvisit.setDiagnosis(patientvisitDTO.getDiagnosis());
+
+        patientvisit.setDiagnosis(patientvisitDTO.getDiagnosis() == null ? null : EncryptionUtil.encrypt(patientvisitDTO.getDiagnosis()));
         final Hospuser patient = patientvisitDTO.getPatient() == null ? null : hospuserRepository.findById(patientvisitDTO.getPatient())
                 .orElseThrow(() -> new NotFoundException("patient not found"));
         patientvisit.setPatient(patient);
