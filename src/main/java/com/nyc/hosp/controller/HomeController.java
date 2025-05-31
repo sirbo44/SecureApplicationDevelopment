@@ -1,17 +1,9 @@
 package com.nyc.hosp.controller;
 
 import com.nyc.hosp.domain.Hospuser;
-import com.nyc.hosp.domain.Role;
 import com.nyc.hosp.repos.HospuserRepository;
-import com.nyc.hosp.repos.RoleRepository;
-import com.nyc.hosp.service.HospuserService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,9 +30,12 @@ public class HomeController {
         Authentication authentication = securityContext.getAuthentication();
         Optional<Hospuser> user = hospuserRepository.findByUsername(authentication.getName());
         if (user.isPresent()) {
-            Duration duration = Duration.between(user.get().getLastchangepassword(), offsetDateTime);
-            System.out.println(duration.toDays());
-            System.out.println("Current date: " + offsetDateTime + " | last login date: " + user.get().getLastlogondatetime());
+            OffsetDateTime lastChange = user.get().getLastchangepassword();
+            if (lastChange == null) {
+                // Handle null case, e.g., force password change
+                return "redirect:/change_password";
+            }
+            Duration duration = Duration.between(lastChange, offsetDateTime);
             if (duration.toDays() > 30) {
                 return "redirect:/change_password";
             } else {

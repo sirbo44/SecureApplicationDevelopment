@@ -18,23 +18,21 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final HospuserDetailsService hospuserDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-    public SecurityConfig(HospuserDetailsService hospuserDetailsService) {
+    public SecurityConfig(HospuserDetailsService hospuserDetailsService, PasswordEncoder passwordEncoder) {
         this.hospuserDetailsService = hospuserDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder();}
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/public/**").permitAll()
-//                        .requestMatchers("/**").hasAuthority("ROLE_ADMIN")
-//                        .requestMatchers("/hospusers/", "/hospuser/**" ).hasAuthority("ROLE_SECRETARY")
-//                        .requestMatchers( "/patientvisits/**", "/patientvisits/add/**", "/patientvisits/").hasAuthority("ROLE_DOCTOR")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/patientvisits/**").hasAnyAuthority("ROLE_DOCTOR","ROLE_ADMIN")
+                        .requestMatchers("/hospusers/**").hasAnyAuthority("ROLE_SECRETARY","ROLE_ADMIN")
+                        .anyRequest().hasAuthority("ROLE_ADMIN")
                 )
                 .formLogin(Customizer.withDefaults()) // default login page
                 .logout(logout -> logout
@@ -50,8 +48,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        System.out.println(passwordEncoder().encode("newpass"));
-        builder.userDetailsService(hospuserDetailsService).passwordEncoder(passwordEncoder());
+        builder.userDetailsService(hospuserDetailsService).passwordEncoder(passwordEncoder);
         return builder.build();
     }
 
