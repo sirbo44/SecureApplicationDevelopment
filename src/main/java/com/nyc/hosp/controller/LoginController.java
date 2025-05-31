@@ -28,18 +28,5 @@ public class LoginController {
         return "error";
     }
 
-    @GetMapping("/change-password")
-    public String showChangePasswordPage() {
-        return "change-password";
-    }
 
-    @PostMapping("/change-password")
-    public String changePassword(String userpassword, String userpassword2) {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        Optional<Hospuser> user = hospuserRepository.findByUsername(authentication.getName());
-        user.get().setLastchangepassword((OffsetDateTime) LocalDate.now().atStartOfDay().atOffset(ZoneOffset.UTC));
-        user.get().setUserpassword(userpassword);
-        return "redirect:/";
-    }
 }

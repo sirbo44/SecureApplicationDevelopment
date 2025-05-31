@@ -24,7 +24,7 @@ public class HospuserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(user.getUsername())
                 .password(user.getUserpassword())
-                .roles(user.getRole().toString())
+                .roles(user.getRole().getRolename())
                 .build();
 
     }

@@ -31,9 +31,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/public/**").permitAll()
-//                        .requestMatchers("/hospusers/", "/hospuser/**" ).hasAnyRole("ADMIN", "SECRETARY")
-//                        .requestMatchers("/roles/").hasRole("ADMIN")
-//                        .requestMatchers( "/patientvisits/**", "/patientvisits/add/**", "/patientvisits/").hasAnyRole( "ADMIN")
+//                        .requestMatchers("/**").hasAuthority("ROLE_ADMIN")
+//                        .requestMatchers("/hospusers/", "/hospuser/**" ).hasAuthority("ROLE_SECRETARY")
+//                        .requestMatchers( "/patientvisits/**", "/patientvisits/add/**", "/patientvisits/").hasAuthority("ROLE_DOCTOR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults()) // default login page
@@ -50,6 +50,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        System.out.println(passwordEncoder().encode("newpass"));
         builder.userDetailsService(hospuserDetailsService).passwordEncoder(passwordEncoder());
         return builder.build();
     }
