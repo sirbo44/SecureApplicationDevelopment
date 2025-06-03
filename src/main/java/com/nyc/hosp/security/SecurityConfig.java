@@ -30,9 +30,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/public/**").permitAll()
-                        .requestMatchers("/patientvisits/**").hasAnyAuthority("ROLE_DOCTOR","ROLE_ADMIN")
-                        .requestMatchers("/hospusers/**").hasAnyAuthority("ROLE_SECRETARY","ROLE_ADMIN")
-                        .anyRequest().hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/patientvisits/**").hasAnyAuthority("ROLE_DOCTOR")
+                        .requestMatchers("/hospusers/**").hasAnyAuthority("ROLE_SECRETARY")
+                        .requestMatchers("/**").hasAuthority("ROLE_ADMIN")
                 )
                 .formLogin(Customizer.withDefaults()) // default login page
                 .logout(logout -> logout
